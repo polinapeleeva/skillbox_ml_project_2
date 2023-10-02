@@ -42,6 +42,16 @@ clf.fit(X_train_vec, y_train)
 
 # Предсказание
 y_pred = clf.predict(X_test_vec)
+print('Линейная регрессия обучилась, точность на проверочной выборке:', accuracy_score(y_test, y_pred))
+
+
+# Создание баккита "mlflow"
+try:
+    s3.create_bucket(Bucket='mlflow')
+    print('Баккит "mlflow" создан')
+except s3.exceptions.BucketAlreadyOwnedByYou:
+    print('Баккит "mlflow" уже существует')
+
 
 # Настройка клиента boto3
 boto3.setup_default_session(
@@ -59,4 +69,4 @@ with mlflow.start_run() as run:
     # Логирование модели
     mlflow.sklearn.log_model(clf, "model", registered_model_name="MyFirstModel")
 
-print('Линейная регрессия обучилась, точность на проверочной выборке:', accuracy_score(y_test, y_pred))
+
